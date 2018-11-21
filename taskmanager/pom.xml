@@ -10,6 +10,8 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>taskmanager-jsf</module>
+        <module>taskmanager-services</module>
+        <module>taskmanager-entities</module>
     </modules>
 
     <dependencies>
@@ -19,6 +21,7 @@
                 javaee-api
             </artifactId>
             <version>7.0</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

@@ -2,33 +2,104 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui">
 <h:head>
-    <h:outputStylesheet library="css" name="bootstrap.min.css"/>
+	<h:outputStylesheet library="css" name="bootstrap.min.css" />
 </h:head>
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <f:view>
-                <h:outputLabel value="Hello, world"/>
-                <h:dataTable title="Tasks" var="task" value="#{taskBean.tasks}">
-                    <h:column>
-                        <f:facet name="header">Title</f:facet>
-                        #{task.title}
-                    </h:column>
-                </h:dataTable>
-                <h:outputLabel value="#{taskBean.taskCount}"/>
-            </f:view>
 
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <button class="btn-default"> About</button>
-        </div>
-    </div>
-</div>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12">
+				<f:view>
+
+					<div class="form_main col-xs-12">
+						<h:outputLabel value="#{taskBean.greeting}" />
+						<hr />
+					</div>
+
+					<div class="form_main col-xs-6">
+						<h4 class="heading">
+							<strong>Add </strong> Task <span></span>
+						</h4>
+						<div class="form">
+
+							<h:form>
+								<div class="input-group">
+									<p:outputLabel value="Title:" />
+									<h:inputText value="#{taskBean.taskModel.title}"
+										styleClass="form-control" pt:placeholder="Title"></h:inputText>
+								</div>
+								<div class="input-group">
+									<p:outputLabel value="Description:" />
+									<h:inputText value="#{taskBean.taskModel.description}"
+										styleClass="form-control" pt:placeholder=" Description"></h:inputText>
+								</div>
+								<div class="input-group">
+									<p:outputLabel for="cStartDate" value="Start date:" />
+									<p:calendar id="cStartDate"
+										value="#{taskBean.taskModel.startDate}" pattern="yyyy-MM-dd"
+										converter="localDateTimeConverter"
+										inputStyleClass="form-control" />
+								</div>
+								<div class="input-group">
+									<p:outputLabel for="cDueDate" value="Due date:" />
+									<p:calendar id="cDueDate" value="#{taskBean.taskModel.dueDate}"
+										pattern="yyyy-MM-dd" converter="localDateTimeConverter"
+										inputStyleClass="form-control" />
+								</div>
+								<div class="input-group">
+									<p:outputLabel for="bCompleted" value="Set as Completed:" />
+									<p:selectBooleanButton id="bCompleted"
+										value="#{taskBean.taskModel.completed}" onLabel="Yes"
+										offLabel="No" style="width:60px" />
+								</div>
+
+								<h:commandButton class="btn btn-default" value="Save"
+									action="${taskBean.saveTask(0)}"></h:commandButton>
+							</h:form>
+
+						</div>
+					</div>
+
+					<div class="form_main col-xs-12">
+						<hr />
+
+						<p:dataTable id="tasks" var="taskModel"
+							value="#{taskBean.taskListModel}" selectionMode="single"
+							selection="#{taskBean.selectedTaskModel}"
+							rowKey="#{taskModel.id}" styleClass="col-xs-12">
+							<f:facet name="header">Tasks</f:facet>
+							<p:column headerText="Titles">
+								<h:outputText value="#{taskModel.title}" />
+							</p:column>
+							<p:column headerText="Due:">
+								<h:outputText value="#{taskModel.dueDate}" />
+							</p:column>
+							<p:column headerText="CreatedOn">
+								<h:outputText value="#{taskModel.createdOn}" />
+							</p:column>
+							<p:column headerText="Completed">
+								<h:outputText value="#{taskModel.completed}" />
+							</p:column>
+
+						</p:dataTable>
+						<h:outputLabel value="#{taskBean.taskCount}" />
+					</div>
+
+				</f:view>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12">
+				<button class="btn btn-default">About</button>
+			</div>
+		</div>
+	</div>
+</body>
 
 </html>

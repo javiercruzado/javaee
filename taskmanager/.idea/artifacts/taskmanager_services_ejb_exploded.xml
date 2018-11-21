@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-ejb" name="taskmanager-services:ejb exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/taskmanager_services_ejb_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="taskmanager-services/ejb/EJB" />
+      <element id="javaee-facet-classes" facet="taskmanager-services/ejb/EJB" />
+    </root>
+  </artifact>
+</component>

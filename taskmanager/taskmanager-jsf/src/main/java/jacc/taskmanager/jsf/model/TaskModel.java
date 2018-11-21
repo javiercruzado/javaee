@@ -3,7 +3,7 @@ package jacc.taskmanager.jsf.model;
 import java.time.LocalDate;
 import java.util.List;
 
-public class Task {
+public class TaskModel {
 
     private int taskId;
     private String title;
@@ -13,10 +13,10 @@ public class Task {
     private String assignedTo;
     private List <String> tags;
 
-    public Task() {
+    public TaskModel() {
     }
 
-    public Task(int id, String title) {
+    public TaskModel(int id, String title) {
         this.taskId = id;
         this.title = title;
     }

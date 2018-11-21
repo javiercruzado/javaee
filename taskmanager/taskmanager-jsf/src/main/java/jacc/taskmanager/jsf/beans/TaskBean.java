@@ -1,77 +1,110 @@
 package jacc.taskmanager.jsf.beans;
 
-import jacc.taskmanager.jsf.model.Task;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+
+import jacc.taskmanager.entities.Task;
+import jacc.taskmanager.services.TaskService;
 
 @Named
 @SessionScoped
 public class TaskBean implements Serializable {
 
-    private static int ids;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	@Inject
+	private TaskService taskService;
+	private String greeting;
+	private Task taskModel;
+	private Task selectedTaskModel;
+	private List<Task> taskListModel;
 
-    private Task task;
-    private List <Task> tasks;
-    private int taskCount;
+	@PostConstruct
+	private void init() {
+		setTaskModel(new Task());
+		greeting = taskService.getGreeting();
+		getTasks();
+	}
 
-    public TaskBean() {
-    }
+	public String getGreeting() {
+		return greeting;
+	}
 
-    @PostConstruct
-    private void init() {
-        tasks = new ArrayList <>();
-        Task firstTask = new Task(0, "first task");
-        tasks.add(firstTask);
-    }
+	public void setGreeting(String greeting) {
+		this.greeting = greeting;
+	}
 
-    public Task getTask() {
-        return task;
-    }
+	public Task getTaskModel() {
+		return taskModel;
+	}
 
-    public void setTask(Task task) {
-        this.task = task;
-    }
+	public void setTaskModel(Task taskModel) {
+		this.taskModel = taskModel;
+	}
 
+	public Task getSelectedTaskModel() {
+		return selectedTaskModel;
+	}
 
-    public List <Task> getTasks() {
-        return tasks;
-    }
+	public void setSelectedTaskModel(Task selectedTaskModel) {
+		this.selectedTaskModel = selectedTaskModel;
+	}
 
-    public void setTasks(List <Task> tasks) {
-        this.tasks = tasks;
-    }
+	public List<Task> getTaskListModel() {
+		return taskListModel;
+	}
 
-    public int getTaskCount() {
-        return tasks.size();
-    }
+	public void setTaskListModel(List<Task> taskListModel) {
+		this.taskListModel = taskListModel;
+	}
 
-    public void editTask(int id) {
-        Optional <Task> optionalTask = getTask(id);
-        task = optionalTask.orElse(new Task(0, ""));
-    }
+	// data
 
-    public void clearTask() {
-        task = new Task(0, "");
-    }
+	public void getTasks() {
+		taskListModel = taskService.getTasks();
+		if (taskListModel.size() > 0) {
+			setSelectedTaskModel(taskListModel.get(0));
+		}
+	}
 
-    public void saveTask(int id) {
-        if (id == 0) {
+	public void saveTask(int id) {
+		if (id == 0) {
+			Task task = new Task();
+			task.setTitle(taskModel.getTitle());
+			task.setDescription(taskModel.getDescription());
+			task.setStartDate(taskModel.getStartDate());
+			task.setDueDate(taskModel.getDueDate());
+			task.setCompleted(taskModel.isCompleted());
+			taskService.createTask(task);
+		}
+		getTasks();
+	}
 
-        }
-    }
+	public void deleteTask(int id) {
+		taskService.deleteTask(id);
+		getTasks();
+	}
 
+	// Helpers
+	private Optional<Task> getTask(int id) {
+		return taskListModel.stream().filter(x -> x.getId() == id).findFirst();
+	}
 
-    public void deleteTask(int id) {
-    }
+	public int getTaskCount() {
+		return taskListModel.size();
+	}
 
-    //Helper
-    private Optional <Task> getTask(int id) {
-        return tasks.stream().filter(x -> x.getTaskId() == id).findFirst();
-    }
+	public void editTask(int id) {
+		Optional<Task> optionalTask = getTask(id);
+		setTaskModel(optionalTask.orElse(new Task()));
+	}
+
 }
