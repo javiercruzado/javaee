@@ -13,10 +13,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Access(FIELD)
-@NamedQuery(name = "Task.FindAll", query = "select t from Task t")
+@NamedQuery(name = "Task.FindAll", query = "select t from Task t order by t.completed, t.dueDate, t.startDate")
 public class Task {
 
 	@Id
@@ -31,9 +33,15 @@ public class Task {
 		this.id = id;
 	}
 
+	@NotNull
+	@Size(min = 5, message = "The min lenght for this field is 5")
 	private String title;
 	private String description;
+
+	@NotNull
 	private LocalDate startDate;
+
+	@NotNull
 	private LocalDate dueDate;
 	private LocalDateTime createDate;
 	private LocalDateTime updateDate;

@@ -6,8 +6,12 @@ import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.primefaces.event.SelectEvent;
 
 import jacc.taskmanager.entities.Task;
 import jacc.taskmanager.services.TaskService;
@@ -84,6 +88,8 @@ public class TaskBean implements Serializable {
 			task.setDueDate(taskModel.getDueDate());
 			task.setCompleted(taskModel.isCompleted());
 			taskService.createTask(task);
+		} else {
+			taskService.updateTask(taskModel);
 		}
 		getTasks();
 	}
@@ -91,6 +97,10 @@ public class TaskBean implements Serializable {
 	public void deleteTask(int id) {
 		taskService.deleteTask(id);
 		getTasks();
+	}
+
+	public void clearTask() {
+		setTaskModel(new Task());
 	}
 
 	// Helpers
@@ -105,6 +115,13 @@ public class TaskBean implements Serializable {
 	public void editTask(int id) {
 		Optional<Task> optionalTask = getTask(id);
 		setTaskModel(optionalTask.orElse(new Task()));
+	}
+
+	public void onRowSelect(SelectEvent event) {
+		Task task = (Task) event.getObject();
+		setTaskModel(task);
+		FacesMessage msg = new FacesMessage("Task Selected", task.getTitle());
+		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
 
 }

@@ -22,45 +22,70 @@
 						<hr />
 					</div>
 
-					<div class="form_main col-xs-6">
+					<div class="form_main col-xs-8">
 						<h4 class="heading">
 							<strong>Add </strong> Task <span></span>
 						</h4>
-						<div class="form">
+						<div>
 
-							<h:form>
-								<div class="input-group">
+							<h:form id="mainForm">
+								<p:growl id="msgs" showDetail="true" />
+								<div class="form-group">
 									<p:outputLabel value="Title:" />
 									<h:inputText value="#{taskBean.taskModel.title}"
 										styleClass="form-control" pt:placeholder="Title"></h:inputText>
+									<p:message for="@previous" />
 								</div>
-								<div class="input-group">
+								<div class="form-group">
 									<p:outputLabel value="Description:" />
-									<h:inputText value="#{taskBean.taskModel.description}"
-										styleClass="form-control" pt:placeholder=" Description"></h:inputText>
+									<h:inputTextarea value="#{taskBean.taskModel.description}"
+										styleClass="form-control" pt:placeholder=" Description"></h:inputTextarea>
 								</div>
-								<div class="input-group">
-									<p:outputLabel for="cStartDate" value="Start date:" />
-									<p:calendar id="cStartDate"
-										value="#{taskBean.taskModel.startDate}" pattern="yyyy-MM-dd"
-										converter="localDateTimeConverter"
-										inputStyleClass="form-control" />
+								<!-- 								<div class="form-group"> -->
+								<!-- 									<p:outputLabel for="cStartDate" value="Start date:" /> -->
+								<!-- 									<p:calendar id="cStartDate" -->
+								<!-- 										value="#{taskBean.taskModel.startDate}" pattern="yyyy-MM-dd" -->
+								<!-- 										converter="localDateTimeConverter" -->
+								<!-- 										inputStyleClass="form-control" /> -->
+								<!-- 								</div> -->
+								<!-- 								<div class="form-group"> -->
+								<!-- 									<p:outputLabel for="cDueDate" value="Due date:" /> -->
+								<!-- 									<p:calendar id="cDueDate" value="#{taskBean.taskModel.dueDate}" -->
+								<!-- 										pattern="yyyy-MM-dd" converter="localDateTimeConverter" -->
+								<!-- 										inputStyleClass="form-control" /> -->
+								<!-- 								</div> -->
+								<div class="form-row col-xs-12">
+									<div class="form-group col-xs-6"
+										style="padding-left: 0px; margin-left: -15px">
+										<p:outputLabel for="cStartDate" value="Start date:" />
+										<p:calendar id="cStartDate"
+											value="#{taskBean.taskModel.startDate}" pattern="yyyy-MM-dd"
+											converter="localDateTimeConverter"
+											inputStyleClass="form-control" />
+									</div>
+									<div class="form-group col-xs-6">
+										<p:outputLabel for="cDueDate" value="Due date:" />
+										<p:calendar id="cDueDate"
+											value="#{taskBean.taskModel.dueDate}" pattern="yyyy-MM-dd"
+											converter="localDateTimeConverter"
+											inputStyleClass="form-control" />
+									</div>
 								</div>
-								<div class="input-group">
-									<p:outputLabel for="cDueDate" value="Due date:" />
-									<p:calendar id="cDueDate" value="#{taskBean.taskModel.dueDate}"
-										pattern="yyyy-MM-dd" converter="localDateTimeConverter"
-										inputStyleClass="form-control" />
-								</div>
-								<div class="input-group">
+								<div class="form-group">
 									<p:outputLabel for="bCompleted" value="Set as Completed:" />
 									<p:selectBooleanButton id="bCompleted"
 										value="#{taskBean.taskModel.completed}" onLabel="Yes"
-										offLabel="No" style="width:60px" />
+										offLabel="No" style="width:60px"
+										inputStyleClass="form-control" />
 								</div>
+								<hr />
+								<h:commandButton class="btn btn-primary" value="Save"
+									action="${taskBean.saveTask(taskBean.taskModel.id)}"></h:commandButton>
+								<h:commandButton class="btn" value="Clear"
+									action="${taskBean.clearTask()}"></h:commandButton>
+								<h:commandButton class="btn" value="Delete"
+									action="${taskBean.deleteTask(taskBean.taskModel.id)}"></h:commandButton>
 
-								<h:commandButton class="btn btn-default" value="Save"
-									action="${taskBean.saveTask(0)}"></h:commandButton>
 							</h:form>
 
 						</div>
@@ -68,26 +93,33 @@
 
 					<div class="form_main col-xs-12">
 						<hr />
+						<h:form id="tableForm">
 
-						<p:dataTable id="tasks" var="taskModel"
-							value="#{taskBean.taskListModel}" selectionMode="single"
-							selection="#{taskBean.selectedTaskModel}"
-							rowKey="#{taskModel.id}" styleClass="col-xs-12">
-							<f:facet name="header">Tasks</f:facet>
-							<p:column headerText="Titles">
-								<h:outputText value="#{taskModel.title}" />
-							</p:column>
-							<p:column headerText="Due:">
-								<h:outputText value="#{taskModel.dueDate}" />
-							</p:column>
-							<p:column headerText="CreatedOn">
-								<h:outputText value="#{taskModel.createdOn}" />
-							</p:column>
-							<p:column headerText="Completed">
-								<h:outputText value="#{taskModel.completed}" />
-							</p:column>
+							<p:dataTable id="tasks" var="taskModel"
+								value="#{taskBean.taskListModel}" selectionMode="single"
+								selection="#{taskBean.selectedTaskModel}"
+								rowKey="#{taskModel.id}">
+								<f:facet name="header">Tasks</f:facet>
+								<p:ajax event="rowSelect" listener="#{taskBean.onRowSelect}"
+									update="mainForm" />
+								<p:column headerText="Title">
+									<h:outputText value="#{taskModel.title}" />
+								</p:column>
+								<p:column headerText="Due">
+									<h:outputText value="#{taskModel.dueDate}" />
+								</p:column>
+								<p:column headerText="CreatedOn">
+									<h:outputText value="#{taskModel.createdOn}" />
+								</p:column>
+								<p:column headerText="UpdateOn">
+									<h:outputText value="#{taskModel.updateDate}" />
+								</p:column>
+								<p:column headerText="Completed">
+									<h:outputText value="#{taskModel.completed}" />
+								</p:column>
 
-						</p:dataTable>
+							</p:dataTable>
+						</h:form>
 						<h:outputLabel value="#{taskBean.taskCount}" />
 					</div>
 
@@ -96,7 +128,7 @@
 		</div>
 		<div class="row">
 			<div class="col-xs-12">
-				<button class="btn btn-default">About</button>
+				<button class="btn btn-info">About</button>
 			</div>
 		</div>
 	</div>
