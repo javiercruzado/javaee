@@ -3,6 +3,7 @@ package jacc.taskmanager.services;
 import java.util.List;
 
 import jacc.taskmanager.entities.Task;
+import taskutils.TaskStatus;
 
 public interface TaskService {
 
@@ -17,5 +18,7 @@ public interface TaskService {
 	void deleteTask(int id);
 	
 	List<Task> getTasks();
+	
+	List<Task> getTasks(TaskStatus taskCriteria);
 
 }

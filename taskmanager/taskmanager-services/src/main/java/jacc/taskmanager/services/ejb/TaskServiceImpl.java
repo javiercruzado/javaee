@@ -3,6 +3,7 @@ package jacc.taskmanager.services.ejb;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -12,6 +13,7 @@ import javax.persistence.TypedQuery;
 
 import jacc.taskmanager.entities.Task;
 import jacc.taskmanager.services.TaskService;
+import taskutils.TaskStatus;
 
 @Stateless
 public class TaskServiceImpl implements TaskService, Serializable {
@@ -50,6 +52,20 @@ public class TaskServiceImpl implements TaskService, Serializable {
 	public List<Task> getTasks() {
 		TypedQuery<Task> query = entityManager.createNamedQuery("Task.FindAll", Task.class);
 		return query.getResultList();
+	}
+
+	@Override
+	public List<Task> getTasks(TaskStatus taskCriteria) {
+
+		if (taskCriteria.equals(TaskStatus.COMPLETED)) {
+			TypedQuery<Task> query = entityManager.createNamedQuery("Task.FindAllCompleted", Task.class);
+			return query.getResultList();
+		} else if (taskCriteria.equals(TaskStatus.UNCOMPLETED)) {
+			TypedQuery<Task> query = entityManager.createNamedQuery("Task.FindAllNotCompleted", Task.class);
+			return query.getResultList();
+		} else {
+			return new ArrayList<>();
+		}
 	}
 
 }

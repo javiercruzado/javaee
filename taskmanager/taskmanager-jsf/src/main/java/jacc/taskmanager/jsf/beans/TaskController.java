@@ -1,6 +1,7 @@
 package jacc.taskmanager.jsf.beans;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,20 +13,24 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.event.SelectEvent;
+import org.primefaces.event.TabChangeEvent;
 
 import jacc.taskmanager.entities.Task;
 import jacc.taskmanager.services.TaskService;
+import taskutils.TaskStatus;
 
 @Named
 @SessionScoped
-public class TaskBean implements Serializable {
+public class TaskController implements Serializable {
 
 	/**
-	 * 
-	 */
+	* 
+	*/
 	private static final long serialVersionUID = 1L;
 	@Inject
 	private TaskService taskService;
+
+	TaskStatus pageSelectionCriteria = TaskStatus.UNCOMPLETED;
 	private String greeting;
 	private Task taskModel;
 	private Task selectedTaskModel;
@@ -33,7 +38,6 @@ public class TaskBean implements Serializable {
 
 	@PostConstruct
 	private void init() {
-		setTaskModel(new Task());
 		greeting = taskService.getGreeting();
 		getTasks();
 	}
@@ -73,10 +77,24 @@ public class TaskBean implements Serializable {
 	// data
 
 	public void getTasks() {
-		taskListModel = taskService.getTasks();
-		if (taskListModel.size() > 0) {
-			setSelectedTaskModel(taskListModel.get(0));
+		clearTask();
+		taskListModel = taskService.getTasks(pageSelectionCriteria);
+		/*
+		 * if (!taskListModel.isEmpty()) { setSelectedTaskModel(taskListModel.get(0)); }
+		 */
+	}
+
+	public void getTasksByStatus(TabChangeEvent event) {
+		String statusId = (String) event.getTab().getAttributes().get("statusId");
+		switch (statusId) {
+		case "0":
+			pageSelectionCriteria = TaskStatus.UNCOMPLETED;
+			break;
+		case "1":
+			pageSelectionCriteria = TaskStatus.COMPLETED;
+			break;
 		}
+		getTasks();
 	}
 
 	public void saveTask(int id) {
@@ -89,6 +107,14 @@ public class TaskBean implements Serializable {
 			task.setCompleted(taskModel.isCompleted());
 			taskService.createTask(task);
 		} else {
+			taskService.updateTask(taskModel);
+		}
+		getTasks();
+	}
+
+	public void saveAsCompleted(int id) {
+		if (id != 0) {
+			taskModel.setCompleted(true);
 			taskService.updateTask(taskModel);
 		}
 		getTasks();
@@ -108,10 +134,6 @@ public class TaskBean implements Serializable {
 		return taskListModel.stream().filter(x -> x.getId() == id).findFirst();
 	}
 
-	public int getTaskCount() {
-		return taskListModel.size();
-	}
-
 	public void editTask(int id) {
 		Optional<Task> optionalTask = getTask(id);
 		setTaskModel(optionalTask.orElse(new Task()));
@@ -120,8 +142,14 @@ public class TaskBean implements Serializable {
 	public void onRowSelect(SelectEvent event) {
 		Task task = (Task) event.getObject();
 		setTaskModel(task);
-		FacesMessage msg = new FacesMessage("Task Selected", task.getTitle());
-		FacesContext.getCurrentInstance().addMessage(null, msg);
+		//FacesMessage msg = new FacesMessage("Task Selected", task.getTitle());
+		//FacesContext.getCurrentInstance().addMessage(null, msg);
+	}
+
+	public String formatDateTime(LocalDateTime dateTime) {
+		if (dateTime == null)
+			return "";
+		return dateTime.toLocalDate().toString();
 	}
 
 }

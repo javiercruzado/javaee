@@ -5,6 +5,7 @@ import static javax.persistence.GenerationType.AUTO;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.List;
 
 import javax.persistence.Access;
@@ -13,12 +14,18 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.persistence.NamedQueries;
 
 @Entity
 @Access(FIELD)
-@NamedQuery(name = "Task.FindAll", query = "select t from Task t order by t.completed, t.dueDate, t.startDate")
+@NamedQueries({
+
+		@NamedQuery(name = "Task.FindAll", query = "select t from Task t order by t.completed, t.dueDate, t.startDate"),
+		@NamedQuery(name = "Task.FindAllCompleted", query = "select t from Task t where t.completed=1 order by t.completed, t.dueDate, t.startDate"),
+		@NamedQuery(name = "Task.FindAllNotCompleted", query = "select t from Task t where t.completed=0 order by t.completed, t.dueDate, t.startDate") })
 public class Task {
 
 	@Id
@@ -27,10 +34,6 @@ public class Task {
 
 	public Integer getId() {
 		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 	@NotNull
@@ -46,6 +49,11 @@ public class Task {
 	private LocalDateTime createDate;
 	private LocalDateTime updateDate;
 	private boolean completed;
+
+	@Transient
+	private int delayedDays;
+	@Transient
+	private int spentDays;
 
 	@ManyToMany
 	private List<Tag> tags;
@@ -113,4 +121,24 @@ public class Task {
 	public void setCompleted(boolean completed) {
 		this.completed = completed;
 	}
+
+	/*
+	 * public int getElapsedDays() { Period period = Period.between(dueDate,
+	 * LocalDate.now()); return period.getDays(); }
+	 */
+
+	public int getDelayedDays() {
+		Period period = Period.between(dueDate, LocalDate.now());
+		if (!completed && period.getDays() > 0)
+			return period.getDays();
+		else
+			return 0;
+	}
+
+	public int getSpentDays() {
+		LocalDate dateOfCompletion = updateDate == null ? LocalDate.now() : updateDate.toLocalDate();
+		Period period = Period.between(dateOfCompletion, createDate.toLocalDate());
+		return period.getDays();
+	}
+
 }
