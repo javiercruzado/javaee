@@ -1,14 +1,13 @@
 package jacc.taskmanager.jsf.beans;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -115,6 +114,7 @@ public class TaskController implements Serializable {
 	public void saveAsCompleted(int id) {
 		if (id != 0) {
 			taskModel.setCompleted(true);
+			taskModel.setCompletedDate(LocalDate.now());
 			taskService.updateTask(taskModel);
 		}
 		getTasks();
@@ -142,14 +142,18 @@ public class TaskController implements Serializable {
 	public void onRowSelect(SelectEvent event) {
 		Task task = (Task) event.getObject();
 		setTaskModel(task);
-		//FacesMessage msg = new FacesMessage("Task Selected", task.getTitle());
-		//FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
 
 	public String formatDateTime(LocalDateTime dateTime) {
 		if (dateTime == null)
 			return "";
 		return dateTime.toLocalDate().toString();
+	}
+	
+	public String formatDate(LocalDate date) {
+		if (date == null)
+			return "";
+		return date.toString();
 	}
 
 }

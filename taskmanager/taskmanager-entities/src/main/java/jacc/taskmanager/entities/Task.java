@@ -24,8 +24,8 @@ import javax.persistence.NamedQueries;
 @NamedQueries({
 
 		@NamedQuery(name = "Task.FindAll", query = "select t from Task t order by t.completed, t.dueDate, t.startDate"),
-		@NamedQuery(name = "Task.FindAllCompleted", query = "select t from Task t where t.completed=1 order by t.completed, t.dueDate, t.startDate"),
-		@NamedQuery(name = "Task.FindAllNotCompleted", query = "select t from Task t where t.completed=0 order by t.completed, t.dueDate, t.startDate") })
+		@NamedQuery(name = "Task.FindAllCompleted", query = "select t from Task t where t.completed=true order by t.completed, t.dueDate, t.startDate"),
+		@NamedQuery(name = "Task.FindAllNotCompleted", query = "select t from Task t where t.completed=false order by t.completed, t.dueDate, t.startDate") })
 public class Task {
 
 	@Id
@@ -46,8 +46,9 @@ public class Task {
 
 	@NotNull
 	private LocalDate dueDate;
-	private LocalDateTime createDate;
-	private LocalDateTime updateDate;
+	private LocalDate completedDate;
+	private LocalDateTime createdDate;
+	private LocalDateTime updatedDate;
 	private boolean completed;
 
 	@Transient
@@ -90,20 +91,28 @@ public class Task {
 		this.dueDate = dueDate;
 	}
 
-	public LocalDateTime getCreatedOn() {
-		return createDate;
+	public LocalDate getCompletedDate() {
+		return completedDate;
 	}
 
-	public void setCreatedOn(LocalDateTime createDate) {
-		this.createDate = createDate;
+	public void setCompletedDate(LocalDate completedDate) {
+		this.completedDate = completedDate;
 	}
 
-	public LocalDateTime getUpdateDate() {
-		return updateDate;
+	public LocalDateTime getCreatedDate() {
+		return createdDate;
 	}
 
-	public void setUpdateDate(LocalDateTime updateDate) {
-		this.updateDate = updateDate;
+	public void setCreatedDate(LocalDateTime createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public LocalDateTime getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(LocalDateTime updatedDate) {
+		this.updatedDate = updatedDate;
 	}
 
 	public List<Tag> getTags() {
@@ -122,23 +131,27 @@ public class Task {
 		this.completed = completed;
 	}
 
-	/*
-	 * public int getElapsedDays() { Period period = Period.between(dueDate,
-	 * LocalDate.now()); return period.getDays(); }
-	 */
-
 	public int getDelayedDays() {
-		Period period = Period.between(dueDate, LocalDate.now());
-		if (!completed && period.getDays() > 0)
-			return period.getDays();
-		else
-			return 0;
+		Period period;
+		if (completed) {
+			period = Period.between(dueDate, completedDate);
+			return period.getDays() > 0 ? period.getDays() : 0;
+		} else {
+			period = Period.between(dueDate, LocalDate.now());
+			return period.getDays() > 0 ? period.getDays() : 0;
+		}
 	}
 
 	public int getSpentDays() {
-		LocalDate dateOfCompletion = updateDate == null ? LocalDate.now() : updateDate.toLocalDate();
-		Period period = Period.between(dateOfCompletion, createDate.toLocalDate());
-		return period.getDays();
+		Period period;
+
+		if (completed) {
+			period = Period.between(startDate, completedDate);
+			return period.getDays() > 0 ? period.getDays() : 0;
+		} else {
+			period = Period.between(startDate, LocalDate.now());
+			return period.getDays() > 0 ? period.getDays() : 0;
+		}
 	}
 
 }

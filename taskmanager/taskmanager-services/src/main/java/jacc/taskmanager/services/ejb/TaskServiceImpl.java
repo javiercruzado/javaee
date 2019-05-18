@@ -18,12 +18,9 @@ import taskutils.TaskStatus;
 @Stateless
 public class TaskServiceImpl implements TaskService, Serializable {
 
-//	@Inject  
-//    private Logger logger;
-
 	private static final long serialVersionUID = 1L;
 	@PersistenceContext(name = "TaskManagerUnit")
-	EntityManager entityManager;
+	private EntityManager entityManager;
 
 	public String getGreeting() {
 		return "Hi, it is " + LocalDate.now().toString();
@@ -31,12 +28,12 @@ public class TaskServiceImpl implements TaskService, Serializable {
 
 	@Override
 	public void createTask(Task entity) {
-		entity.setCreatedOn(LocalDateTime.now());
+		entity.setCreatedDate(LocalDateTime.now());
 		entityManager.persist(entity);
 	}
 
 	public Task updateTask(Task task) {
-		task.setUpdateDate(LocalDateTime.now());
+		task.setUpdatedDate(LocalDateTime.now());
 		return entityManager.merge(task);
 	}
 

@@ -98,7 +98,7 @@
 
 						</div>
 					</div>
-a
+
 					<div class="form_main col-xs-12">
 						<hr />
 						<!-- new -->
@@ -132,21 +132,17 @@ a
 								</p:column>
 								<p:column headerText="CreatedOn">
 									<h:outputText
-										value="#{taskController.formatDateTime(taskModel.createdOn)}">
+										value="#{taskController.formatDateTime(taskModel.createdDate)}">
 									</h:outputText>
 								</p:column>
 								<p:column headerText="Elapsed Days">
 									<h:outputText value="#{taskModel.delayedDays}" />
 								</p:column>
-								<p:column headerText="UpdateOn">
+								<p:column headerText="Completed On">
 									<h:outputText
-										value="#{taskController.formatDateTime(taskModel.updateDate)}">
+										value="#{taskController.formatDate(taskModel.completedDate)}">
 									</h:outputText>
 								</p:column>
-								<p:column headerText="Completed">
-									<h:outputText value="#{taskModel.completed}" />
-								</p:column>
-
 							</p:dataTable>
 						</h:form>
 					</div>
