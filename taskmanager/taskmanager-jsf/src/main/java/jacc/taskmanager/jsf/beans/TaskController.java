@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -84,6 +85,7 @@ public class TaskController implements Serializable {
 	}
 
 	public void getTasksByStatus(TabChangeEvent event) {
+		
 		String statusId = (String) event.getTab().getAttributes().get("statusId");
 		switch (statusId) {
 		case "0":
@@ -92,6 +94,8 @@ public class TaskController implements Serializable {
 		case "1":
 			pageSelectionCriteria = TaskStatus.COMPLETED;
 			break;
+		default:
+			pageSelectionCriteria = TaskStatus.UNCOMPLETED;
 		}
 		getTasks();
 	}
@@ -155,5 +159,11 @@ public class TaskController implements Serializable {
 			return "";
 		return date.toString();
 	}
+	
+	public String logout() {
+        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+        return "/index.xhtml?faces-redirect=true";
+    }
+
 
 }

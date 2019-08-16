@@ -12,14 +12,17 @@ import javax.persistence.Access;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.persistence.NamedQueries;
 
 @Entity
+@Table(schema = "taskmanager")
 @Access(FIELD)
 @NamedQueries({
 
@@ -36,15 +39,15 @@ public class Task {
 		return id;
 	}
 
-	@NotNull
+	@NotNull(message = "mandatory")
 	@Size(min = 5, message = "The min lenght for this field is 5")
 	private String title;
 	private String description;
 
-	@NotNull
+	@NotNull(message = "mandatory")
 	private LocalDate startDate;
 
-	@NotNull
+	@NotNull(message = "mandatory")
 	private LocalDate dueDate;
 	private LocalDate completedDate;
 	private LocalDateTime createdDate;
@@ -57,6 +60,7 @@ public class Task {
 	private int spentDays;
 
 	@ManyToMany
+	@JoinTable(schema = "taskmanager")
 	private List<Tag> tags;
 
 	public String getTitle() {

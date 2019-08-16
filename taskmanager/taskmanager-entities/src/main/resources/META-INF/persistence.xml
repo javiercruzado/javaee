@@ -3,15 +3,17 @@
 
     <persistence-unit name="TaskManagerUnit">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-<!--         <jta-data-source>jdbc/__MariaDB</jta-data-source> -->
-        <jta-data-source>jdbc/_PostgresDB</jta-data-source>
-        <properties>        .
+        <jta-data-source>java:jboss/jdbc/PostgresDB</jta-data-source>
+        
+        <!-- <jta-data-source>jdbc/__MariaDB</jta-data-source> -->
+	    <!-- <jta-data-source>jdbc/_PostgresDB</jta-data-source> -->
+<!--         <properties>        . -->
 <!--             <property name="javax.persistence.schema-generation.database.action" value="create"/> -->
 <!--             <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/> -->
 <!--             <property name="javax.persistence.schema-generation.create-source" value="metadata"/> -->
 <!--             <property name="javax.persistence.schema-generation.scripts.action" value="drop-and-create"/> -->
 <!--             <property name="javax.persistence.schema-generation.scripts.create-target" value="./create.sql"/> -->
 <!--             <property name="javax.persistence.schema-generation.scripts.drop-target" value="./drop.sql"/> -->
-        </properties>
+<!--         </properties> -->
     </persistence-unit>
 </persistence>
