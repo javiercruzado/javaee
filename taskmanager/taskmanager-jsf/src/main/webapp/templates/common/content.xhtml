@@ -31,7 +31,7 @@
 									<div class="form-group">
 										<p:outputLabel value="Title:" />
 										<p:inputText value="#{taskController.taskModel.title}"
-											styleClass="form-control" pt:placeholder="Title"></p:inputText>
+											styleClass="form-control" pt:placeholder="Title" autocomplete="false"></p:inputText>
 										<p:message for="@previous" />
 									</div>
 									<div class="form-group">
@@ -98,7 +98,7 @@
 								value="#{taskController.taskListModel}" selectionMode="single"
 								selection="#{taskController.selectedTaskModel}"
 								rowKey="#{taskModel.id}"
-								rowStyleClass="#{taskModel.delayedDays > 0 ? 'danger' : taskModel.delayedDays == 0? 'warning':null}">
+								rowStyleClass="#{taskModel.delayedDays > 0 and !taskModel.completed ? 'danger' : taskModel.delayedDays == 0? 'warning':null}">
 								<f:facet name="header">Tasks</f:facet>
 								<p:ajax event="rowSelect"
 									listener="#{taskController.onRowSelect}" update="mainForm"
