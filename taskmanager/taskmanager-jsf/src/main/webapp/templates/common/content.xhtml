@@ -9,11 +9,6 @@
 		<div class="row">
 			<div class="col-xs-12">
 				<f:view>
-					<div class="form_main col-xs-12">
-						<h:outputText value="#{taskController.greeting}" />
-						<hr />
-					</div>
-
 					<div class="form_main col-xs-8">
 						<p:panel header="Task Details">
 							<div>
@@ -31,7 +26,8 @@
 									<div class="form-group">
 										<p:outputLabel value="Title:" />
 										<p:inputText value="#{taskController.taskModel.title}"
-											styleClass="form-control" pt:placeholder="Title" autocomplete="false"></p:inputText>
+											styleClass="form-control" pt:placeholder="Title"
+											autocomplete="false"></p:inputText>
 										<p:message for="@previous" />
 									</div>
 									<div class="form-group">

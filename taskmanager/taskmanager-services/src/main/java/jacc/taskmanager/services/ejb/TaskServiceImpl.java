@@ -1,7 +1,10 @@
 package jacc.taskmanager.services.ejb;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +25,7 @@ public class TaskServiceImpl implements TaskService, Serializable {
 	private EntityManager entityManager;
 
 	public String getGreeting() {
-		return "Welcome back, login time: " + LocalDateTime.now().toString();
+		return "Welcome, date: " + LocalDate.now().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL));
 	}
 
 	@Override
