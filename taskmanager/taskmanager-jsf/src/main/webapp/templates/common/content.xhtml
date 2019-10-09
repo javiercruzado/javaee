@@ -9,7 +9,8 @@
 		<div class="col-xs-12">
 			<f:view>
 				<div class="form_main col-xs-8">
-					<p:panel header="Task Details" toggleable="true" collapsed="true" closeTitle="Open to see details">
+					<p:panel header="Task Details" toggleable="true" collapsed="true"
+						closeTitle="Open to see details">
 						<div>
 
 							<h:form id="mainForm">
@@ -93,7 +94,8 @@
 							value="#{taskController.taskListModel}" selectionMode="single"
 							selection="#{taskController.selectedTaskModel}"
 							rowKey="#{taskModel.id}"
-							rowStyleClass="#{taskModel.delayedDays > 0 and !taskModel.completed ? 'danger' : taskModel.delayedDays == 0? 'warning':null}">
+							rowStyleClass="#{taskModel.delayedDays > 0 and !taskModel.completed ? 'danger' : taskModel.delayedDays == 0? 'warning':null}"
+							scrollable="true" scrollHeight="240">
 							<f:facet name="header">Tasks</f:facet>
 							<p:ajax event="rowSelect"
 								listener="#{taskController.onRowSelect}" update="mainForm"
