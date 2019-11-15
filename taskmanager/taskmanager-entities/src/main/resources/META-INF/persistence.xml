@@ -2,7 +2,6 @@
 <persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence" version="2.1">
 
     <persistence-unit name="TaskManagerUnit">
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <jta-data-source>java:jboss/jdbc/PostgresDB</jta-data-source>
         
         <!-- <jta-data-source>jdbc/__MariaDB</jta-data-source> -->

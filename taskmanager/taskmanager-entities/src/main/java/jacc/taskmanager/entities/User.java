@@ -6,11 +6,12 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Column;
+import javax.persistence.OneToMany;
 
 /**
  * Entity implementation class for Entity: User
@@ -30,6 +31,8 @@ public class User implements Serializable {
 	private String userName;
 	private LocalDate createDate;
 	private LocalDate updateDate;
+	
+	@OneToMany
 	@JoinColumn
 	private List<Task> tasks;
 
