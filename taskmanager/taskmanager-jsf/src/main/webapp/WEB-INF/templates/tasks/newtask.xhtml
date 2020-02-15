@@ -1,0 +1,59 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+<div class="row">
+	<div class="col-xs-12" style="align-items: center;">
+		<f:view>
+			<div class="form_main col-xs-8">
+				<p:panel header="Task Details">
+					<div>
+
+						<h:form id="taskForm">
+							<div class="form-group">
+								<p:remoteCommand name="rc" update="taskForm"
+									action="#{taskController.saveAsCompleted(taskController.taskModel.id)}"
+									rendered="#{!taskController.taskModel.completed and not empty taskController.taskModel.id}" />
+								<p:commandButton type="button" onclick="rc()" value="Set As Completed"
+									rendered="#{!taskController.taskModel.completed and not empty taskController.taskModel.id}" />
+							</div>
+							<div class="form-group">
+								<p:outputLabel value="Title:" />
+								<p:inputText value="#{taskController.taskModel.title}" styleClass="form-control" pt:placeholder="Title"
+									autocomplete="false"></p:inputText>
+								<p:message for="@previous" />
+							</div>
+							<div class="form-group">
+								<p:outputLabel value="Description:" />
+								<p:inputTextarea value="#{taskController.taskModel.description}" styleClass="form-control"
+									pt:placeholder=" Description"></p:inputTextarea>
+							</div>
+							<div class="form-row col-xs-12">
+								<div class="form-group col-xs-6" style="padding-left: 0px; margin-left: -15px">
+									<p:outputLabel for="cStartDate" value="Start date:" />
+									<p:calendar id="cStartDate" value="#{taskController.taskModel.startDate}" pattern="yyyy-MM-dd"
+										converter="localDateTimeConverter" inputStyleClass="form-control" />
+								</div>
+								<div class="form-group col-xs-6">
+									<p:outputLabel for="cDueDate" value="Due date:" />
+									<p:calendar id="cDueDate" value="#{taskController.taskModel.dueDate}" pattern="yyyy-MM-dd"
+										converter="localDateTimeConverter" inputStyleClass="form-control" />
+								</div>
+							</div>
+
+							<hr />
+							<p:commandButton class="btn btn-primary" value="Save"
+								action="#{taskController.saveTask(taskController.taskModel.id)}" ajax="false" />
+							<p:commandButton class="btn" value="Delete" action="#{taskController.deleteTask(taskController.taskModel.id)}"
+								disabled="#{empty taskController.taskModel.id}" ajax="false" />
+							<p:commandButton class="btn" value="Clear" action="#{taskController.clearTask()}"
+								disabled="#{empty taskController.taskModel.id}" update="taskForm" />
+
+						</h:form>
+
+					</div>
+				</p:panel>
+			</div>
+		</f:view>
+	</div>
+</div>
+</html>

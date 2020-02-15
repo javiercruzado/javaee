@@ -1,0 +1,64 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+
+<div class="row">
+
+	<f:view>
+		<div class="form_main col-xs-12">
+			<hr />
+			<!-- new -->
+			<p:tabView>
+				<p:ajax event="tabChange" listener="#{taskController.getTasksByStatus}" update="tableForm" resetValues="true" />
+				<p:tab title="Pending">
+					<f:attribute name="statusId" value="0" />
+				</p:tab>
+				<p:tab title="Completed">
+					<f:attribute name="statusId" value="1" />
+				</p:tab>
+			</p:tabView>
+			<!-- new -->
+			<h:form id="tableForm">
+
+				<p:dataTable id="tasks" var="taskModel" value="#{taskController.taskListModel}" selectionMode="single"
+					selection="#{taskController.selectedTaskModel}" rowKey="#{taskModel.id}"
+					rowStyleClass="#{taskModel.delayedDays > 0 and !taskModel.completed ? 'danger' : taskModel.delayedDays == 0? 'warning':null}"
+					scrollable="true" scrollHeight="240">
+					<f:facet name="header">Tasks</f:facet>
+					<p:column headerText="Title">
+						<h:outputText value="#{taskModel.title}" />
+					</p:column>
+					<p:column headerText="Due">
+						<h:outputText value="#{taskModel.dueDate}">
+						</h:outputText>
+					</p:column>
+					<p:column headerText="CreatedOn">
+						<h:outputText value="#{taskController.formatDateTime(taskModel.createdDate)}">
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Elapsed Days">
+						<h:outputText value="#{taskModel.delayedDays}" />
+					</p:column>
+					<p:column headerText="Completed On">
+						<h:outputText value="#{taskController.formatDate(taskModel.completedDate)}">
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Actions" style="width:20%">
+						<h:commandButton value="Edit" style="color:#505050" action="#{taskController.editTask(taskModel.id)}"
+							update=":#{p:component('content')}">
+							<f:param name="tabMenuIndex" value="1"></f:param>
+						</h:commandButton>
+						<h:commandButton value="Complete" action="#{taskController.saveAsCompleted(taskModel.id)}" style="color:#505050"
+							onclick="if (! confirm('Do you really want to do set the task as completed?')) return false">
+						</h:commandButton>
+						<h:commandButton value="Delete" action="#{taskController.deleteTask(taskModel.id)}" style="color:#505050"
+							onclick="if (! confirm('Do you really want to do delete the task?')) return false">
+						</h:commandButton>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</div>
+	</f:view>
+</div>
+
+</html>

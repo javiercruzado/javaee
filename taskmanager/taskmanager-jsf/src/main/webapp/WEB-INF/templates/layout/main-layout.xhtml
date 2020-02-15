@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+
+	<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta http-equiv="refresh"
+		content="#{facesContext.externalContext.sessionMaxInactiveInterval};url=#{request.contextPath}/index.xhtml" />
+
+	<title>Task Manager</title>
+
+	<h:outputStylesheet library="webjars" name="bootstrap/3.3.6/css/bootstrap.min-jsf.css" />
+	<h:outputStylesheet library="webjars" name="bootstrap/3.3.6/css/bootstrap-theme.min-jsf.css" />
+	<h:outputStylesheet library="webjars" name="font-awesome/4.5.0/css/font-awesome.min-jsf.css" />
+
+	<style type="text/css">
+.danger {
+	background-color: #f2dede;
+	/* 	color: #a94442; */
+}
+
+.warning {
+	background-color: #fcf8e3;
+	/* 	color: #8a6d3b; */
+}
+</style>
+
+</h:head>
+<h:body>
+
+	<ui:include src="../common/menu.xhtml" />
+	
+	<div class="container">
+		<ui:include src="../common/header.xhtml" />
+		<ui:include src="../common/content.xhtml" />
+		<!-- 		<ui:composition template="/WEB-INF/templates/tasks/list.xhtml"> -->
+<!-- 		</ui:composition> -->
+
+	</div>
+	<hr />
+	<ui:include src="../common/footer.xhtml" />
+	<!-- load js at bottom for faster loading-->
+	<h:outputScript library="webjars" name="bootstrap/3.3.6/js/bootstrap.min.js" />
+
+</h:body>
+</html>

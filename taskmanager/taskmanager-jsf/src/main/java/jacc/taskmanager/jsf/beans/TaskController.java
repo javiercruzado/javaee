@@ -31,8 +31,12 @@ public class TaskController implements Serializable {
 	* 
 	*/
 	private static final long serialVersionUID = 1L;
+
 	@Inject
 	private TaskService taskService;
+
+	@Inject
+	private PageViewController pageViewController;
 
 	TaskStatus pageSelectionCriteria = TaskStatus.UNCOMPLETED;
 	private String greeting;
@@ -110,8 +114,8 @@ public class TaskController implements Serializable {
 				if (x.getDueDate().isBefore(minLocalDate))
 					minLocalDate = x.getDueDate();
 			});
+			startDate = java.sql.Date.valueOf(minLocalDate.minusDays(1));
 		}
-		startDate = java.sql.Date.valueOf(minLocalDate.minusDays(1));
 	}
 
 	public void setTimeLineModel(TimelineModel timeLineModel) {
@@ -122,7 +126,9 @@ public class TaskController implements Serializable {
 
 	public void getTasks() {
 		clearTask();
+		pageViewController.goToNextPage("list");
 		taskListModel = taskService.getTasks(pageSelectionCriteria);
+		FacesContext.getCurrentInstance().getPartialViewContext().getRenderIds().add("content:tableForm:tasks");
 	}
 
 	public void getTasksByStatus(TabChangeEvent event) {
@@ -154,22 +160,27 @@ public class TaskController implements Serializable {
 			taskService.updateTask(taskModel);
 		}
 		getTasks();
+
 		return "/index.xhtml?faces-redirect=true";
 	}
 
 	public String saveAsCompleted(int id) {
-		if (id != 0) {
-			taskModel.setCompleted(true);
-			taskModel.setCompletedDate(LocalDate.now());
-			taskService.updateTask(taskModel);
+		if (id != 0 && getTask(id).isPresent()) {
+			Task taskToComplete = getTask(id).get();
+			taskToComplete.setCompleted(true);
+			taskToComplete.setCompletedDate(LocalDate.now());
+			taskService.updateTask(taskToComplete);
 		}
 		getTasks();
+
 		return "/index.xhtml?faces-redirect=true";
 	}
 
-	public void deleteTask(int id) {
+	public String deleteTask(int id) {
 		taskService.deleteTask(id);
 		getTasks();
+
+		return "/index.xhtml?faces-redirect=true";
 	}
 
 	public void clearTask() {
@@ -182,10 +193,12 @@ public class TaskController implements Serializable {
 	}
 
 	public void editTask(int id) {
+		pageViewController.setNextPage("newtask");
 		Optional<Task> optionalTask = getTask(id);
 		setTaskModel(optionalTask.orElse(new Task()));
 	}
 
+	@Deprecated
 	public void onRowSelect(SelectEvent event) {
 		Task task = (Task) event.getObject();
 		setTaskModel(task);
